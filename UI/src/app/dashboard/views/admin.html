@@ -7,6 +7,7 @@
         <li role="presentation" ng-class="{active:tab === 'dashboards'}"><a href ng-click="navigateToTab('dashboards')">Edit Dashboards</a></li>
         <li role="presentation" ng-class="{active:tab === 'users'}"><a href ng-click="navigateToTab('users')">Manage Admins</a></li>
         <li role="presentation" ng-class="{active:tab === 'apitokens'}"><a href ng-click="navigateToTab('apitokens')">Generate ApiTokens</a></li>
+        <li role="presentation" ng-class="{active:tab === 'properties'}"><a href ng-click="navigateToTab('properties')">Update Collector Properties</a></li>
       </ul>
     </div>
 
@@ -139,6 +140,20 @@
                                     No results
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-show="tab === 'properties'">
+                <div class="widget-modal">
+                    <div class="widget-modal-heading">
+                        Update Collector Properties
+                    </div>
+                    <div class="widget-modal-body">
+                        <div class="row">
+
+                            <input type = "file" file-model = "myFile"/>
+                            <button ng-click = "uploadFile()">Upload File</button>
                         </div>
                     </div>
                 </div>

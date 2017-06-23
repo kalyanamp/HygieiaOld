@@ -6,11 +6,39 @@
 
     angular
         .module(HygieiaConfig.module)
-        .controller('AdminController', AdminController);
+        .controller('AdminController', AdminController).directive('fileModel', ['$parse', function ($parse) {
+        return {
+            restrict: 'A',
+            link: function(scope, element, attrs) {
+                var model = $parse(attrs.fileModel);
+                var modelSetter = model.assign;
+                element.bind('change', function(){
+                    scope.$apply(function(){
+                        modelSetter(scope, element[0].files[0]);
+                    });
+                });
+            }
+        };
+    }]).service('fileUpload', ['$http', function ($http) {
+        this.uploadFileToUrl = function(file){
+            var fd = new FormData();
+            fd.append('file', file);
+            var uploadUrl = "/api/propertiesFileUpload/";
+            $http.post(uploadUrl, fd, {
+                transformRequest: angular.identity,
+                headers: {'Content-Type': undefined}
+            })
+                .success(function(){
+                })
+                .error(function(data){
+                    console.log(data)
+                });
+        }
+    }]);
 
 
-    AdminController.$inject = ['$scope', 'dashboardData', '$location','$uibModal', 'userService', 'authService', 'userData'];
-    function AdminController($scope, dashboardData, $location, $uibModal, userService, authService, userData) {
+    AdminController.$inject = ['$scope', 'dashboardData', '$location','$uibModal', 'userService', 'authService', 'userData','fileUpload'];
+    function AdminController($scope, dashboardData, $location, $uibModal, userService, authService, userData,fileUpload) {
         var ctrl = this;
         if (userService.isAuthenticated() && userService.isAdmin()) {
             $location.path('/admin');
@@ -188,6 +216,9 @@
             }
         );
         }
-
+        $scope.uploadFile = function(){
+            var file = $scope.myFile;
+            fileUpload.uploadFileToUrl(file);
+        };
     }
 })();
