@@ -1,17 +1,15 @@
 package com.capitalone.dashboard.config;
 
 import com.capitalone.dashboard.repository.ApiTokenRepository;
+import com.capitalone.dashboard.repository.AuthenticationRepository;
+import com.capitalone.dashboard.repository.DashboardRepository;
+import com.capitalone.dashboard.repository.UserInfoRepository;
 import com.capitalone.dashboard.service.*;
-import com.capitalone.dashboard.model.Performance;
+import com.capitalone.dashboard.util.PaginationHeaderUtility;
 import org.mockito.Mockito;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-
-import com.capitalone.dashboard.repository.AuthenticationRepository;
-import com.capitalone.dashboard.repository.DashboardRepository;
-import com.capitalone.dashboard.repository.UserInfoRepository;
-import com.capitalone.dashboard.util.PaginationHeaderUtility;
 
  @SpringBootApplication
  @ComponentScan(basePackages = {"com.capitalone.dashboard.auth"})
@@ -173,8 +171,11 @@ import com.capitalone.dashboard.util.PaginationHeaderUtility;
 	 }
 
 	 @Bean
+	 public GitRequestService gitRequestService() {
+		 return Mockito.mock(GitRequestService.class);
+	 }
+	 @Bean
 	 public CollectorPropertiesService collectorPropertiesService() {
 		 return Mockito.mock(CollectorPropertiesService.class);
 	 }
-
  }
