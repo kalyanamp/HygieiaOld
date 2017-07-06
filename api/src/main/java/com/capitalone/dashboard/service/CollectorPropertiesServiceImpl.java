@@ -7,9 +7,10 @@ import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -34,16 +35,17 @@ public class CollectorPropertiesServiceImpl implements CollectorPropertiesServic
             String key = (String) entry.getKey();
             String value = (String) entry.getValue();
 
-            if(key.indexOf(".") != -1){
+            if(key.indexOf(".") != -1 || (!key.equals("dbname") && !key.equals("dbusername") && !key.equals("dbpassword"))){
                 key = key.substring(key.indexOf(".") + 1);
                 if(!key.equals("name")){
                     collectorPropertiesForSubmit.put(key,value);
                 }else{
                     collectorProperties.setName(value);
                     CollectorProperties prop = getByName(value);
-                    
+
                     if(prop != null){
                         collectorProperties.setId(prop.getId());
+                        collectorPropertiesForSubmit.putAll(prop.getProperties());
                     }
 
                 }
@@ -56,6 +58,7 @@ public class CollectorPropertiesServiceImpl implements CollectorPropertiesServic
         return collectorPropertiesRepository.save(collectorProperties);
 
     }
+    @Override
     public CollectorProperties getByName(String name) throws HygieiaException{
         if(name == null || name.isEmpty()){
             throw new HygieiaException("Name field not found.", HygieiaException.BAD_DATA);
@@ -67,6 +70,11 @@ public class CollectorPropertiesServiceImpl implements CollectorPropertiesServic
             throw new HygieiaException("No Object ID found.", HygieiaException.BAD_DATA);
         }
         return collectorPropertiesRepository.findOne(id);
+    }
+    @Override
+    public Page<CollectorProperties> collectorPropertiesWithFilter(String filter, Pageable pageable) {
+        Page<CollectorProperties> propertiesString = collectorPropertiesRepository.findAllByNameContainingIgnoreCase(filter, pageable);
+        return propertiesString;
     }
 
 }

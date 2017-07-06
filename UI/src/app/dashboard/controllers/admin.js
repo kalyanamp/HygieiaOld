@@ -19,26 +19,11 @@
                 });
             }
         };
-    }]).service('fileUpload', ['$http', function ($http) {
-        this.uploadFileToUrl = function(file){
-            var fd = new FormData();
-            fd.append('file', file);
-            var uploadUrl = "/api/propertiesFileUpload/";
-            $http.post(uploadUrl, fd, {
-                transformRequest: angular.identity,
-                headers: {'Content-Type': undefined}
-            })
-                .success(function(){
-                })
-                .error(function(data){
-                    console.log(data)
-                });
-        }
     }]);
 
 
-    AdminController.$inject = ['$scope', 'dashboardData', '$location','$uibModal', 'userService', 'authService', 'userData','fileUpload'];
-    function AdminController($scope, dashboardData, $location, $uibModal, userService, authService, userData,fileUpload) {
+    AdminController.$inject = ['$scope', 'dashboardData', '$location','$uibModal', 'userService', 'authService', 'userData','collectorProperties'];
+    function AdminController($scope, dashboardData, $location, $uibModal, userService, authService, userData, collectorProperties) {
         var ctrl = this;
         if (userService.isAuthenticated() && userService.isAdmin()) {
             $location.path('/admin');
@@ -53,10 +38,14 @@
         ctrl.templateUrl = "app/dashboard/views/navheader.html";
         ctrl.username = userService.getUsername();
         ctrl.authType = userService.getAuthType();
+        ctrl.collectorItemProperties = {};
         ctrl.login = login;
         ctrl.logout = logout;
         ctrl.editDashboard = editDashboard;
         ctrl.generateToken = generateToken;
+        ctrl.getPropertyItemList = getPropertyItemList;
+        ctrl.getPropertiesForSelected = getPropertiesForSelected;
+        ctrl.addProperty = addProperty;
 
         $scope.tab="dashboards";
 
@@ -218,7 +207,39 @@
         }
         $scope.uploadFile = function(){
             var file = $scope.myFile;
-            fileUpload.uploadFileToUrl(file);
+            collectorProperties.uploadFileToUrl(file);
         };
+        function getPropertyItemList(filter) {
+            return collectorProperties.getStoredItemPropertyList({"search": filter, "size": 20}).then(function (response){
+                return response;
+            });
+        }
+
+        function getPropertiesForSelected(propertyType){
+           collectorProperties.getSelectedItemProperties(propertyType).then(function (response){
+               ctrl.collectorItemProperties = response
+            })
+        }
+        function addProperty(form){
+
+            if (form.$valid) {
+                var submitData = {
+                    name: ctrl.collectorProperties.name,
+                    propertiesKey: document.addPropertyForm.propertiesKey.value,
+                    propertiesValue: document.addPropertyForm.propertiesValue.value
+                    };
+
+                collectorProperties
+                    .updateProperties(submitData)
+                    .success(function (data) {
+                        console.log(data)
+                        getPropertiesForSelected(data.name)
+                    })
+                    .error(function (data) {
+
+                    });
+            }
+
+        }
     }
 })();

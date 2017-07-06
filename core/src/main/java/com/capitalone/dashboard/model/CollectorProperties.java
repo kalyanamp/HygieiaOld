@@ -14,6 +14,13 @@ public class CollectorProperties extends BaseModel {
     private String name;
     private Properties properties;
 
+    public CollectorProperties(){
+
+    }
+    public CollectorProperties(String name, Properties properties){
+        this.name = name;
+        this.properties = properties;
+    }
     public ObjectId getCollectorItemId() {
         return collectorItemId;
     }

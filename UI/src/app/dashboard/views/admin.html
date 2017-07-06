@@ -151,10 +151,88 @@
                     </div>
                     <div class="widget-modal-body">
                         <div class="row">
-
-                            <input type = "file" file-model = "myFile"/>
-                            <button ng-click = "uploadFile()">Upload File</button>
+                            <div class="col-xs-push-2 col-xs-8">
+                                <input type = "file"  file-model = "myFile"/>
+                                <button  class="btn btn-default" ng-click = "uploadFile()">Upload File</button>
+                            </div>
                         </div>
+
+                        <div class="row gap">
+                            <div class="col-md-12">
+                                <input
+                                        type="text"
+                                        name="collectorProperties"
+                                        ng-model="ctrl.collectorProperties"
+                                        class="form-control"
+                                        placeholder=""
+                                        uib-typeahead="propertyItem as propertyItem.name for propertyItem in ctrl.getPropertyItemList($viewValue) "
+                                        typeahead-wait-ms="250" autocomplete="off"
+                                        typeahead-min-length="0"
+                                        typeahead-on-select="ctrl.getPropertiesForSelected(ctrl.collectorProperties.name)"
+                                        typeahead-editable="false"
+                                        typeahead-no-results="noResults" />
+
+                                <div class="form-control" ng-show="noResults">
+                                    No Results Found
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row gap" ng-if="ctrl.collectorItemProperties.properties">
+                            <h3>{{ctrl.collectorItemProperties.name}} Managed Properties</h3>
+                            <div class="dash-modal-row delete-dashboard-row clearfix"
+                                 ng-repeat="(key, value)  in ctrl.collectorItemProperties.properties">
+
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control" value="{{key}}" readonly/>
+
+                                </div>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control" value="{{value}}"/>
+
+                                </div>
+                                <div class="col-sm-2 text-center">
+                                    <dash-edit  class="clickable" ng-click="ctrl.deleteDashboard(item.id)"></dash-edit>
+                                    <dash-trash class="clickable" ng-click="ctrl.deleteDashboard(item.id)"></dash-trash>
+                                </div>
+
+                            </div>
+                            <h3>Add Properties</h3>
+                            <form name="addPropertyForm" class="form"   ng-submit="ctrl.addProperty(addPropertyForm)" novalidate>
+                                <div class="dash-modal-row delete-dashboard-row clearfix">
+                                    <div class="col-sm-5">
+                                        <form-group input="propertiesKey" errors="{pattern : 'Period(s) found.'}">
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   ng-model="ctrl.propertiesKey"
+                                                   name="propertiesKey"
+                                                   ng-pattern="/^[^.]*$/"
+                                                   required/>
+
+
+                                        </form-group>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <form-group input="propertiesValue" >
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   ng-model="ctrl.propertiesValue"
+                                                   name="propertiesValue" />
+
+
+                                        </form-group>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <button type="submit" class="btn btn-primary btn-wide">Save</button>
+                                </div>
+                            </form>
+                        </div>
+
+
+
                     </div>
                 </div>
             </div>
