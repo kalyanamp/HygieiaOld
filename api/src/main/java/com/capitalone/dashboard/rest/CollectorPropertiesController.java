@@ -4,9 +4,7 @@ import com.capitalone.dashboard.misc.HygieiaException;
 import com.capitalone.dashboard.model.CollectorProperties;
 import com.capitalone.dashboard.request.CollectorPropertiesRequest;
 import com.capitalone.dashboard.service.CollectorPropertiesService;
-import com.capitalone.dashboard.service.CollectorPropertiesServiceImpl;
 import com.capitalone.dashboard.util.PaginationHeaderUtility;
-import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,11 +97,8 @@ public class CollectorPropertiesController {
 
         try {
             CollectorProperties properties = collectorPropertiesRequest.toCollectorProperties();
-            LOGGER.info(properties.getName());
-            LOGGER.info("size: " + properties.getProperties().size());
-
             return ResponseEntity
-                    .ok().body(collectorPropertiesService.create(properties));
+                    .ok().body(collectorPropertiesService.update(properties));
         } catch (HygieiaException he) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
@@ -111,5 +106,17 @@ public class CollectorPropertiesController {
         }
 
     }
+    @RequestMapping(value = "/collectorProperties/removeProperties/", method = POST, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<CollectorProperties> removeProperties( @Valid @RequestBody CollectorPropertiesRequest collectorPropertiesRequest) throws HygieiaException{
 
+        try {
+            return ResponseEntity
+                    .ok().body(collectorPropertiesService.remove(collectorPropertiesRequest));
+        } catch (HygieiaException he) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(null);
+        }
+
+    }
 }

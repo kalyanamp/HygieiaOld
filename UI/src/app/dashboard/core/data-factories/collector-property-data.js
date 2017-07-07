@@ -9,12 +9,14 @@
         var fileUploadRoute = '/api/collectorProperties/propertiesFileUpload/';
         var storedPropertyListRoute = '/api/collectorProperties/propertyList/';
         var selectedPropertyRoute = '/api/collectorProperties/getSelectedProperty';
-        var updatePropertyRoute = '/api/collectorProperties/updateProperties/'
+        var updatePropertyRoute = '/api/collectorProperties/updateProperties/';
+        var removePropertyRoute = '/api/collectorProperties/removeProperties/'
         return {
             getStoredItemPropertyList: getStoredItemPropertyList,
             uploadFileToUrl: uploadFileToUrl,
             getSelectedItemProperties: getSelectedItemProperties,
-            updateProperties: updateProperties
+            updateProperties: updateProperties,
+            removeProperties: removeProperties
         };
 
         function getStoredItemPropertyList( params){
@@ -44,8 +46,16 @@
         }
 
         function updateProperties(data){
-            console.log(data)
             return $http.post(updatePropertyRoute, data)
+                .success(function (response) {
+                    return response.data;
+                })
+                .error(function (response) {
+                    return null;
+                });
+        }
+        function removeProperties(data){
+            return $http.post(removePropertyRoute, data)
                 .success(function (response) {
                     return response.data;
                 })

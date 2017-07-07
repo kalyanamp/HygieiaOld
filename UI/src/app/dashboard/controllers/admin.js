@@ -46,6 +46,9 @@
         ctrl.getPropertyItemList = getPropertyItemList;
         ctrl.getPropertiesForSelected = getPropertiesForSelected;
         ctrl.addProperty = addProperty;
+        ctrl.deleteProperty = deleteProperty;
+        ctrl.editProperty = editProperty;
+        ctrl.submitProperty = submitProperty;
 
         $scope.tab="dashboards";
 
@@ -227,19 +230,47 @@
                     name: ctrl.collectorProperties.name,
                     propertiesKey: document.addPropertyForm.propertiesKey.value,
                     propertiesValue: document.addPropertyForm.propertiesValue.value
-                    };
-
-                collectorProperties
-                    .updateProperties(submitData)
-                    .success(function (data) {
-                        console.log(data)
-                        getPropertiesForSelected(data.name)
-                    })
-                    .error(function (data) {
-
-                    });
+                };
+                submitProperty(submitData);
             }
 
+        }
+        function editProperty(key, value){
+            console.log(value)
+            var submitData = {
+                name: ctrl.collectorProperties.name,
+                propertiesKey: key,
+                propertiesValue: value
+            };
+            submitProperty(submitData);
+        }
+        function deleteProperty(key, value){
+
+            var submitData = {
+                name: ctrl.collectorProperties.name,
+                propertiesKey: key,
+                propertiesValue: value
+            };
+            collectorProperties
+                .removeProperties(submitData)
+                .success(function (data) {
+                    getPropertiesForSelected(data.name)
+                })
+                .error(function (data) {
+
+                });
+        }
+        function submitProperty(submitData){
+
+
+            collectorProperties
+                .updateProperties(submitData)
+                .success(function (data) {
+                    getPropertiesForSelected(data.name)
+                })
+                .error(function (data) {
+
+                });
         }
     }
 })();

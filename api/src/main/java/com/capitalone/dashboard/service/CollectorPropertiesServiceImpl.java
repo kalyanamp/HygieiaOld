@@ -3,6 +3,7 @@ package com.capitalone.dashboard.service;
 import com.capitalone.dashboard.misc.HygieiaException;
 import com.capitalone.dashboard.model.CollectorProperties;
 import com.capitalone.dashboard.repository.CollectorPropertiesRepository;
+import com.capitalone.dashboard.request.CollectorPropertiesRequest;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,7 @@ public class CollectorPropertiesServiceImpl implements CollectorPropertiesServic
             String key = (String) entry.getKey();
             String value = (String) entry.getValue();
 
-            if(key.indexOf(".") != -1 || (!key.equals("dbname") && !key.equals("dbusername") && !key.equals("dbpassword"))){
+            if(key.indexOf(".") != -1){
                 key = key.substring(key.indexOf(".") + 1);
                 if(!key.equals("name")){
                     collectorPropertiesForSubmit.put(key,value);
@@ -45,7 +46,6 @@ public class CollectorPropertiesServiceImpl implements CollectorPropertiesServic
 
                     if(prop != null){
                         collectorProperties.setId(prop.getId());
-                        collectorPropertiesForSubmit.putAll(prop.getProperties());
                     }
 
                 }
@@ -76,5 +76,30 @@ public class CollectorPropertiesServiceImpl implements CollectorPropertiesServic
         Page<CollectorProperties> propertiesString = collectorPropertiesRepository.findAllByNameContainingIgnoreCase(filter, pageable);
         return propertiesString;
     }
+    @Override
+    public CollectorProperties update(CollectorProperties collectorProperties) throws HygieiaException{
+        if(collectorProperties.getName() == null || collectorProperties.getName().isEmpty()){
+            throw new HygieiaException("Name field not found.", HygieiaException.BAD_DATA);
+        }else{
+            CollectorProperties properties = getByName(collectorProperties.getName());
+            properties.getProperties().putAll(collectorProperties.getProperties());
+            return collectorPropertiesRepository.save(properties);
+        }
+    }
+    @Override
+    public CollectorProperties remove(CollectorPropertiesRequest collectorPropertiesRequest) throws HygieiaException{
+        if(collectorPropertiesRequest.getName() == null || collectorPropertiesRequest.getName().isEmpty()){
+            throw new HygieiaException("Name field not found.", HygieiaException.BAD_DATA);
+        }else{
+            CollectorProperties properties = getByName(collectorPropertiesRequest.getName());
+            String key = collectorPropertiesRequest.getPropertiesKey();
+            if(key != null && !key.isEmpty()){
+                properties.getProperties().remove(key);
+                return collectorPropertiesRepository.save(properties);
+            }else{
+                throw new HygieiaException("Key field not found.", HygieiaException.BAD_DATA);
+            }
 
+        }
+    }
 }
