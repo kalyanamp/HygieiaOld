@@ -30,7 +30,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 public class CollectorPropertiesController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CollectorPropertiesController.class);
+
     private final CollectorPropertiesService collectorPropertiesService;
     private PaginationHeaderUtility paginationHeaderUtility;
 
