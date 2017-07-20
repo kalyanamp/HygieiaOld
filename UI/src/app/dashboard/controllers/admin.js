@@ -22,8 +22,8 @@
     }]);
 
 
-    AdminController.$inject = ['$scope', 'dashboardData', '$location','$uibModal', 'userService', 'authService', 'userData','collectorProperties'];
-    function AdminController($scope, dashboardData, $location, $uibModal, userService, authService, userData, collectorProperties) {
+    AdminController.$inject = ['$scope', 'dashboardData', '$location','$uibModal', 'userService', 'authService', 'userData', 'dashboardService','collectorProperties'];
+    function AdminController($scope, dashboardData, $location, $uibModal, userService, authService, userData, dashboardService, collectorProperties) {
         var ctrl = this;
         if (userService.isAuthenticated() && userService.isAdmin()) {
             $location.path('/admin');
@@ -123,17 +123,16 @@
                 controller: 'EditDashboardController',
                 controllerAs: 'ctrl',
                 resolve: {
-                    dashboardId: function() {
-                        return item.id;
-                    },
-                    dashboardName: function() {
-                        return item.name;
+                    dashboardItem: function() {
+                        return item;
                     }
                 }
             });
 
-            mymodalInstance.result.then(function(condition) {
-                window.location.reload(false);
+            mymodalInstance.result.then(function success() {
+                dashboardData.search().then(processResponse);
+                userData.getAllUsers().then(processUserResponse);
+                userData.apitokens().then(processTokenResponse);
             });
 
         }
@@ -161,7 +160,12 @@
             for (var x = 0; x < data.length; x++) {
                 ctrl.dashboards.push({
                     id: data[x].id,
-                    name: data[x].title
+                    name: dashboardService.getDashboardTitle(data[x]),
+                    type: data[x].type,
+                    validServiceName:  data[x].validServiceName,
+                    validAppName: data[x].validAppName,
+                    configurationItemBusServName:  data[x].configurationItemBusServName,
+                    configurationItemBusAppName:  data[x].configurationItemBusAppName,
                 });
             }
         }

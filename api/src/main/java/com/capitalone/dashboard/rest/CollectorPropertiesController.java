@@ -5,8 +5,6 @@ import com.capitalone.dashboard.model.CollectorProperties;
 import com.capitalone.dashboard.request.CollectorPropertiesRequest;
 import com.capitalone.dashboard.service.CollectorPropertiesService;
 import com.capitalone.dashboard.util.PaginationHeaderUtility;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

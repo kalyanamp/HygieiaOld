@@ -17,6 +17,7 @@ import com.capitalone.dashboard.service.CloudVirtualNetworkService;
 import com.capitalone.dashboard.service.CloudVolumeService;
 import com.capitalone.dashboard.service.CodeQualityService;
 import com.capitalone.dashboard.service.CollectorService;
+import com.capitalone.dashboard.model.CollectorProperties;
 import com.capitalone.dashboard.service.CommitService;
 import com.capitalone.dashboard.service.GitRequestService;
 import com.capitalone.dashboard.service.DashboardService;
@@ -32,6 +33,7 @@ import com.capitalone.dashboard.service.UserInfoService;
 import com.capitalone.dashboard.util.PaginationHeaderUtility;
 import com.capitalone.dashboard.service.Monitor2Service;
 import com.capitalone.dashboard.service.PerformanceService;
+import com.capitalone.dashboard.service.CmdbService;
 
 
 /**
@@ -189,6 +191,10 @@ public class TestConfig {
 	public ApiTokenService apiTokenService() {
 		return Mockito.mock(ApiTokenService.class);
 	}
+
+	@Bean
+	public CmdbService cmdbService() {return Mockito.mock(CmdbService.class);}
+
 	@Bean
 	public CollectorPropertiesService collectorPropertiesService() {
 		return Mockito.mock(CollectorPropertiesService.class);
